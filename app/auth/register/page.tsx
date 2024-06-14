@@ -1,4 +1,5 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -33,8 +34,8 @@ export default function RegisterPage() {
           <Input id="password" minLength={8} placeholder="********" type="password" required />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="password">Confirm Password</Label>
-          <Input id="password" minLength={8} placeholder="********" type="password" required />
+          <Label htmlFor="confirm-password">Confirm Password</Label>
+          <Input id="confirm-password" minLength={8} placeholder="********" type="password" required />
         </div>
         <Button type="submit" className="w-full">
           Create an account

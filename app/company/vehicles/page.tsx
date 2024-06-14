@@ -2,9 +2,9 @@
 
 import { useState, useCallback, useEffect, Suspense } from "react";
 import debounce from "lodash/debounce";
-import { useUsers } from "@/hooks/useUsers";
-import { DataTable } from "@/app/company/users/data-table";
-import { columns } from "@/app/company/users/columns";
+import { useVehicles } from "@/hooks/useVehicles";
+import { DataTable } from "@/app/company/vehicles/data-table";
+import { columns } from "@/app/company/vehicles/columns";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,9 +13,9 @@ import { Search, PlusCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { ApiError } from "@/types/error";
-import Loading from "@/app/company/users/loading";
+import Loading from "@/app/company/vehicles/loading";
 
-export default function UsersPage() {
+export default function VehiclesPage() {
   const { toast } = useToast();
   const [selectedTab, setSelectedTab] = useState<string>("all");
   const [query, setQuery] = useState<string>("");
@@ -23,7 +23,7 @@ export default function UsersPage() {
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(10);
 
-  const { data, error } = useUsers(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
+  const { data, error } = useVehicles(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
 
   const handleTabChange = (value: string) => {
     setSelectedTab(value);
@@ -70,15 +70,15 @@ export default function UsersPage() {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-2">
-      <h1 className="text-3xl font-semibold">Users</h1>
-      <h2 className="text-sm text-muted-foreground">List of users registered on the system.</h2>
+      <h1 className="text-3xl font-semibold">Vehicles</h1>
+      <h2 className="text-sm text-muted-foreground">List of vehicles registered on the system.</h2>
       <Tabs value={selectedTab} onValueChange={handleTabChange}>
         <div className="flex items-center gap-2">
           <TabsList className="hidden md:block">
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="driver">Drivers</TabsTrigger>
-            <TabsTrigger value="manager">Managers</TabsTrigger>
-            <TabsTrigger value="admin">Admins</TabsTrigger>
+            <TabsTrigger value="inUse">In Use</TabsTrigger>
+            <TabsTrigger value="repairing">Repairing</TabsTrigger>
+            <TabsTrigger value="none">None</TabsTrigger>
           </TabsList>
           <div className="md:hidden flex-auto">
             <Select value={selectedTab} onValueChange={handleTabChange}>
@@ -87,9 +87,9 @@ export default function UsersPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="driver">Drivers</SelectItem>
-                <SelectItem value="manager">Managers</SelectItem>
-                <SelectItem value="admin">Admins</SelectItem>
+                <SelectItem value="inUse">In Use</SelectItem>
+                <SelectItem value="repairing">Repairing</SelectItem>
+                <SelectItem value="none">None</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -105,7 +105,7 @@ export default function UsersPage() {
           </div>
           <Button className="h-10 gap-1" size="sm">
             <PlusCircle className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add User</span>
+            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Vehicle</span>
           </Button>
         </div>
         <Card className="mt-2">
@@ -113,13 +113,13 @@ export default function UsersPage() {
             <TabsContent value="all">
               <Suspense fallback={<Loading />}>{renderContent()}</Suspense>
             </TabsContent>
-            <TabsContent value="driver">
+            <TabsContent value="inUse">
               <Suspense fallback={<Loading />}>{renderContent()}</Suspense>
             </TabsContent>
-            <TabsContent value="manager">
+            <TabsContent value="repairing">
               <Suspense fallback={<Loading />}>{renderContent()}</Suspense>
             </TabsContent>
-            <TabsContent value="admin">
+            <TabsContent value="none">
               <Suspense fallback={<Loading />}>{renderContent()}</Suspense>
             </TabsContent>
           </CardContent>
