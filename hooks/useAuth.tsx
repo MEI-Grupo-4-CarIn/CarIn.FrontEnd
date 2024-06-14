@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return user;
       } catch (error) {
         console.log("Token validation failed:", error);
+        logout();
         return null;
       }
     }

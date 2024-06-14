@@ -2,7 +2,7 @@
 
 import "@/styles/globals.css";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
@@ -23,33 +23,36 @@ interface CompanyLayoutProps {
 }
 
 export default function CompanyLayout({ children }: CompanyLayoutProps) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = () => {
     logout();
     router.push("/auth/login");
   };
 
+  const getLinkClass = (path: string) => (pathname === path ? "text-foreground" : "text-muted-foreground");
+
   return (
     <ProtectedRoute>
       <div>
         <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
           <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-            <Link className="flex items-center gap-2 text-lg font-semibold md:text-base" href="dashboard">
+            <Link className="flex items-center gap-2 text-lg font-semibold md:text-base" href="/company/dashboard">
               <CarInIconSVG className="h-8" />
               <span className="sr-only">CarIn</span>
             </Link>
-            <Link className="text-foreground transition-colors hover:text-foreground" href="dashboard">
+            <Link className={getLinkClass("/company/dashboard")} href="/company/dashboard">
               Dashboard
             </Link>
-            <Link className="text-muted-foreground transition-colors hover:text-foreground" href="users">
+            <Link className={getLinkClass("/company/users")} href="/company/users">
               Users
             </Link>
-            <Link className="text-muted-foreground transition-colors hover:text-foreground" href="vehicles">
+            <Link className={getLinkClass("/company/vehicles")} href="/company/vehicles">
               Vehicles
             </Link>
-            <Link className="text-muted-foreground transition-colors hover:text-foreground" href="routes">
+            <Link className={getLinkClass("/company/routes")} href="/company/routes">
               Routes
             </Link>
           </nav>
@@ -66,16 +69,16 @@ export default function CompanyLayout({ children }: CompanyLayoutProps) {
                   <CarInIconSVG className="h-8" />
                   <span className="sr-only">CarIn</span>
                 </Link>
-                <Link className="hover:text-foreground" href="dashboard">
+                <Link className={getLinkClass("/company/dashboard")} href="/company/dashboard">
                   Dashboard
                 </Link>
-                <Link className="text-muted-foreground hover:text-foreground" href="users">
+                <Link className={getLinkClass("/company/users")} href="/company/users">
                   Users
                 </Link>
-                <Link className="text-muted-foreground hover:text-foreground" href="vehicles">
+                <Link className={getLinkClass("/company/vehicles")} href="/company/vehicles">
                   Vehicles
                 </Link>
-                <Link className="text-muted-foreground hover:text-foreground" href="routes">
+                <Link className={getLinkClass("/company/routes")} href="/company/routes">
                   Routes
                 </Link>
               </nav>
@@ -90,7 +93,7 @@ export default function CompanyLayout({ children }: CompanyLayoutProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Duarte Fernandes</DropdownMenuLabel>
+                <DropdownMenuLabel>{user ? `${user.firstName} ${user.lastName}` : "User"}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Link href="#">Profile</Link>

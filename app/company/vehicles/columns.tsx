@@ -6,7 +6,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
-import { Vehicle } from "@/types/vehicle";
+import { Vehicle, formatStatus } from "@/types/vehicle";
 
 // Extend the ColumnMeta to include the className property
 declare module "@tanstack/react-table" {
@@ -20,7 +20,7 @@ export const columns: ColumnDef<Vehicle>[] = [
     accessorKey: "imageUrl",
     header: "Image",
     cell: ({ row }) => (
-      <Image alt="User image" className="aspect-square rounded-md object-cover" height={64} src={"/placeholder_profile.svg"} width={64} />
+      <Image alt="User image" className="aspect-square rounded-md object-fit" height={64} src={"/placeholder_vehicle.svg"} width={64} />
     ),
     meta: { className: "hidden sm:table-cell" },
   },
@@ -45,7 +45,7 @@ export const columns: ColumnDef<Vehicle>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <Badge variant="outline">{row.original.status}</Badge>,
+    cell: ({ row }) => <Badge variant="outline">{formatStatus(row.original.status)}</Badge>,
     meta: { className: "hidden md:table-cell" },
   },
   {

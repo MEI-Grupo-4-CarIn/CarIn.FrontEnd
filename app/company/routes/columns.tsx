@@ -5,8 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import Image from "next/image";
-import { User } from "@/types/user";
+import { Route, formatStatus, formatDate } from "@/types/route";
 
 // Extend the ColumnMeta to include the className property
 declare module "@tanstack/react-table" {
@@ -15,37 +14,38 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Route>[] = [
   {
-    accessorKey: "imageUrl",
-    header: "Image",
-    cell: ({ row }) => (
-      <Image
-        alt="User image"
-        className="aspect-square rounded-md object-fit"
-        height={64}
-        src={row.original.imageUrl || "/placeholder_profile.svg"}
-        width={64}
-      />
-    ),
-    meta: { className: "hidden sm:table-cell" },
+    accessorKey: "startPoint",
+    header: "Starting Point",
+    cell: ({ row }) => `${row.original.startPoint.city}, ${row.original.startPoint.country}`,
+    meta: { className: "font-medium max-w-20 md:max-w-40 text-clip table-cell" },
   },
   {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => `${row.original.firstName} ${row.original.lastName}`,
-    meta: { className: "font-medium max-w-16 md:max-w-40 text-clip table-cell" },
+    accessorKey: "endPoint",
+    header: "Ending Point",
+    cell: ({ row }) => `${row.original.endPoint.city}, ${row.original.endPoint.country}`,
+    meta: { className: "font-medium max-w-20 md:max-w-40 text-clip table-cell" },
   },
   {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => row.original.email,
+    accessorKey: "startDate",
+    header: "Date",
+    cell: ({ row }) => formatDate(row.original.startDate),
     meta: { className: "font-medium max-w-28 md:max-w-40 truncate hover:text-clip table-cell" },
   },
   {
-    accessorKey: "role",
-    header: "Role",
-    cell: ({ row }) => <Badge variant="outline">{row.original.role}</Badge>,
+    accessorKey: "distance",
+    header: "Distance",
+    cell: ({ row }) => `${row.original.distance.toFixed(0)} km`,
+    meta: { className: "font-medium max-w-28 md:max-w-40 truncate hover:text-clip hidden md:table-cell" },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const { text, variant } = formatStatus(row.original.status);
+      return <Badge variant={variant}>{text}</Badge>;
+    },
     meta: { className: "hidden md:table-cell" },
   },
   {
