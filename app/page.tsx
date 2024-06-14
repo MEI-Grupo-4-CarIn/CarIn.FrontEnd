@@ -1,14 +1,24 @@
 "use client";
 
-import React from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import DashboardPage from "@/app/dashboard/page";
-import LoginPage from "@/app/login/page";
 
-const HomePage: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+const HomePage = () => {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
 
-  return isAuthenticated ? <DashboardPage /> : <LoginPage />;
+  useEffect(() => {
+    if (!isLoading) {
+      if (user) {
+        router.push("/company/dashboard");
+      } else {
+        router.push("/auth/login");
+      }
+    }
+  }, [user, isLoading, router]);
+
+  return null;
 };
 
 export default HomePage;
