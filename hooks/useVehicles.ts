@@ -20,19 +20,10 @@ const fetchVehicles = async (search: string, status: string, pageSize: number, p
   return data;
 };
 
-const fetchVehicleById = async (id: string): Promise<Vehicle> => {
-  const { data } = await api.get(`/vehicles/${id}`);
-  return data;
-};
-
 export const useVehicles = (search: string, status: string, pageSize: number, page: number) => {
   return useQuery<{ data: Vehicle[]; meta: PaginationMeta }, ApiError>(
     ["vehicles", search, status, pageSize, page],
     () => fetchVehicles(search, status, pageSize, page),
     { keepPreviousData: true }
   );
-};
-
-export const useVehicleById = (id: string) => {
-  return useQuery<Vehicle, ApiError>(["vehicle", id], () => fetchVehicleById(id), { enabled: !!id });
 };

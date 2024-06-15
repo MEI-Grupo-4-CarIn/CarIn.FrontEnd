@@ -20,19 +20,10 @@ const fetchUsers = async (search: string, role: string, pageSize: number, page: 
   return data;
 };
 
-const fetchUserById = async (id: number): Promise<User> => {
-  const { data } = await api.get(`/users/${id}`);
-  return data;
-};
-
 export const useUsers = (search: string, role: string, pageSize: number, page: number) => {
   return useQuery<{ data: User[]; meta: PaginationMeta }, ApiError>(
     ["users", search, role, pageSize, page],
     () => fetchUsers(search, role, pageSize, page),
     { keepPreviousData: true }
   );
-};
-
-export const useUserById = (id: number) => {
-  return useQuery<User, ApiError>(["user", id], () => fetchUserById(id), { enabled: !!id });
 };

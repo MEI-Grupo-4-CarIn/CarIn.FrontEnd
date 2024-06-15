@@ -20,19 +20,10 @@ const fetchRoutes = async (search: string, status: string, pageSize: number, pag
   return data;
 };
 
-const fetchRouteById = async (id: string): Promise<Route> => {
-  const { data } = await api.get(`/routes/${id}`);
-  return data;
-};
-
 export const useRoutes = (search: string, status: string, pageSize: number, page: number) => {
   return useQuery<{ data: Route[]; meta: PaginationMeta }, ApiError>(
     ["routes", search, status, pageSize, page],
     () => fetchRoutes(search, status, pageSize, page),
     { keepPreviousData: true }
   );
-};
-
-export const useRouteById = (id: string) => {
-  return useQuery<Route, ApiError>(["route", id], () => fetchRouteById(id), { enabled: !!id });
 };
