@@ -1,27 +1,27 @@
 import { format } from "date-fns";
 
 export interface Route {
-  _id: string;
+  _id?: string;
   userId: string;
   vehicleId: string;
   startPoint: Location;
   endPoint: Location;
   startDate: string;
-  estimatedEndDate: string;
-  distance: number;
-  duration: string;
+  estimatedEndDate?: string;
+  distance?: number;
+  duration?: string;
   status: "pending" | "inProgress" | "completed" | "cancelled";
   avoidTolls: boolean;
   avoidHighways: boolean;
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Location {
   city: string;
   country: string;
-  coordinates: [number, number];
+  coordinates?: [number, number];
 }
 
 interface StatusDetails {

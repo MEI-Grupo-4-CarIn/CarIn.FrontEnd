@@ -69,7 +69,7 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-2">
+    <div className="mx-auto grid w-full gap-2">
       <h1 className="text-3xl font-semibold">Users</h1>
       <h2 className="text-sm text-muted-foreground">List of users registered on the system.</h2>
       <Tabs value={selectedTab} onValueChange={handleTabChange}>
