@@ -69,7 +69,7 @@ export default function VehiclesPage() {
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-2">
+    <div className="mx-auto grid w-full gap-2">
       <h1 className="text-3xl font-semibold">Vehicles</h1>
       <h2 className="text-sm text-muted-foreground">List of vehicles registered on the system.</h2>
       <Tabs value={selectedTab} onValueChange={handleTabChange}>

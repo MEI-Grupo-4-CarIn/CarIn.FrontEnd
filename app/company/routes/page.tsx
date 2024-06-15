@@ -14,16 +14,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { ApiError } from "@/types/error";
 import Loading from "@/app/company/routes/loading";
+import AddRouteDialog from "@/app/company/routes/add-route-dialog";
+import EditRouteDialog from "@/app/company/routes/edit-route-dialog";
 
-export default function VehiclesPage() {
+export default function RoutesPage() {
   const { toast } = useToast();
   const [selectedTab, setSelectedTab] = useState<string>("all");
   const [query, setQuery] = useState<string>("");
   const [debouncedQuery, setDebouncedQuery] = useState<string>(query);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [isNewRouteDialogOpen, setIsNewRouteDialogOpen] = useState<boolean>(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [editingRoute, setEditingRoute] = useState<any | null>(null); // Armazenar a rota completa
 
-  const { data, error } = useRoutes(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
+  const { data, error, refetch } = useRoutes(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
 
   const handleTabChange = (value: string) => {
     setSelectedTab(value);
@@ -53,10 +58,15 @@ export default function VehiclesPage() {
     }
   }, [error, toast]);
 
+  const handleEditClick = (route: any) => {
+    setEditingRoute(route); // Armazenar a rota completa
+    setIsEditDialogOpen(true);
+  };
+
   const renderContent = () => {
     return (
       <DataTable
-        columns={columns}
+        columns={columns(handleEditClick)}
         data={data?.data || []}
         totalItems={data?.meta?.totalItems || 0}
         pageCount={data?.meta?.totalPages || 1}
@@ -69,7 +79,7 @@ export default function VehiclesPage() {
   };
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-2">
+    <div className="mx-auto grid w-full gap-2">
       <h1 className="text-3xl font-semibold">Routes</h1>
       <h2 className="text-sm text-muted-foreground">List of routes on the system.</h2>
       <Tabs value={selectedTab} onValueChange={handleTabChange}>
@@ -105,7 +115,7 @@ export default function VehiclesPage() {
               onChange={handleSearchChange}
             />
           </div>
-          <Button className="h-10 gap-1" size="sm">
+          <Button className="h-10 gap-1" size="sm" onClick={() => setIsNewRouteDialogOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Route</span>
           </Button>
@@ -130,6 +140,26 @@ export default function VehiclesPage() {
           </CardContent>
         </Card>
       </Tabs>
+      <AddRouteDialog
+        open={isNewRouteDialogOpen}
+        onOpenChange={setIsNewRouteDialogOpen}
+        onRouteAdded={() => {
+          refetch();
+          setIsNewRouteDialogOpen(false);
+        }}
+      />
+      {editingRoute && (
+        <EditRouteDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          routeData={editingRoute}
+          onRouteUpdated={() => {
+            refetch();
+            setIsEditDialogOpen(false);
+            setEditingRoute(null);
+          }}
+        />
+      )}
     </div>
   );
 }
