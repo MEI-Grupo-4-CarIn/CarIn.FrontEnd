@@ -59,7 +59,7 @@ export default function RoutesPage() {
   }, [error, toast]);
 
   const handleEditClick = (route: any) => {
-    setEditingRoute(route); // Armazenar a rota completa
+    setEditingRoute(route);
     setIsEditDialogOpen(true);
   };
 

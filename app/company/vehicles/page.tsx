@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { ApiError } from "@/types/error";
 import Loading from "@/app/company/vehicles/loading";
+import AddVehicleDialog from "@/app/company/vehicles/add-vehicle-dialog";
 
 export default function VehiclesPage() {
   const { toast } = useToast();
@@ -22,8 +23,11 @@ export default function VehiclesPage() {
   const [debouncedQuery, setDebouncedQuery] = useState<string>(query);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [isNewVehicleDialogOpen, setIsNewVehicleDialogOpen] = useState<boolean>(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [editingVehicle, setEditingVehicle] = useState<any | null>(null);
 
-  const { data, error } = useVehicles(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
+  const { data, error, refetch } = useVehicles(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
 
   const handleTabChange = (value: string) => {
     setSelectedTab(value);
@@ -53,10 +57,15 @@ export default function VehiclesPage() {
     }
   }, [error, toast]);
 
+  const handleEditClick = (vehicle: any) => {
+    setEditingVehicle(vehicle);
+    setIsEditDialogOpen(true);
+  };
+
   const renderContent = () => {
     return (
       <DataTable
-        columns={columns}
+        columns={columns(handleEditClick)}
         data={data?.data || []}
         totalItems={data?.meta?.totalItems || 0}
         pageCount={data?.meta?.totalPages || 1}
@@ -103,7 +112,7 @@ export default function VehiclesPage() {
               onChange={handleSearchChange}
             />
           </div>
-          <Button className="h-10 gap-1" size="sm">
+          <Button className="h-10 gap-1" size="sm" onClick={() => setIsNewVehicleDialogOpen(true)}>
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Vehicle</span>
           </Button>
@@ -125,6 +134,14 @@ export default function VehiclesPage() {
           </CardContent>
         </Card>
       </Tabs>
+      <AddVehicleDialog
+        open={isNewVehicleDialogOpen}
+        onOpenChange={setIsNewVehicleDialogOpen}
+        onVehicleAdded={() => {
+          refetch();
+          setIsNewVehicleDialogOpen(false);
+        }}
+      />
     </div>
   );
 }
