@@ -25,6 +25,11 @@ const fetchRouteById = async (id: string): Promise<Route> => {
   return data;
 };
 
+const fetchTotalRoutes = async (): Promise<number> => {
+  const { data } = await api.get("/routes", { params: { page: 1, perPage: 1 } });
+  return data.meta.totalItems;
+};
+
 export const useRoutes = (search: string, status: string, pageSize: number, page: number) => {
   return useQuery<{ data: Route[]; meta: PaginationMeta }, ApiError>(
     ["routes", search, status, pageSize, page],
@@ -35,4 +40,8 @@ export const useRoutes = (search: string, status: string, pageSize: number, page
 
 export const useRouteById = (id: string) => {
   return useQuery<Route, ApiError>(["route", id], () => fetchRouteById(id), { enabled: !!id });
+};
+
+export const useTotalRoutes = () => {
+  return useQuery<number, ApiError>("totalRoutes", fetchTotalRoutes);
 };

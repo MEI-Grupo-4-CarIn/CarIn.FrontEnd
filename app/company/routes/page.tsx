@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -17,6 +17,18 @@ import { ApiError } from "@/types/error";
 import Loading from "@/app/company/routes/loading";
 import AddRouteDialog from "@/app/company/routes/add-route-dialog";
 import EditRouteDialog from "@/app/company/routes/edit-route-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { useMutation } from "react-query";
+import api from "@/lib/axios";
 
 export default function RoutesPage() {
   const { toast } = useToast();
@@ -28,7 +40,8 @@ export default function RoutesPage() {
   const [pageSize, setPageSize] = useState<number>(10);
   const [isNewRouteDialogOpen, setIsNewRouteDialogOpen] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
-  const [editingRoute, setEditingRoute] = useState<any | null>(null); // Armazenar a rota completa
+  const [editingRoute, setEditingRoute] = useState<any | null>(null);
+  const [deletingRoute, setDeletingRoute] = useState<any | null>(null);
 
   const { data, error, refetch } = useRoutes(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
 
@@ -62,14 +75,36 @@ export default function RoutesPage() {
   };
 
   const handleEditClick = (route: any) => {
-    setEditingRoute(route); // Armazenar a rota completa
+    setEditingRoute(route);
     setIsEditDialogOpen(true);
   };
+
+  const handleDeleteClick = (route: any) => {
+    setDeletingRoute(route);
+  };
+
+  const mutation = useMutation((routeId: string) => api.delete(`/routes/${routeId}`), {
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Route deleted successfully.",
+      });
+      refetch();
+      setDeletingRoute(null);
+    },
+    onError: (error: ApiError) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const renderContent = () => {
     return (
       <DataTable
-        columns={columns(handleDetailsClick, handleEditClick)}
+        columns={columns(handleDetailsClick, handleEditClick, handleDeleteClick)}
         data={data?.data || []}
         totalItems={data?.meta?.totalItems || 0}
         pageCount={data?.meta?.totalPages || 1}
@@ -153,6 +188,7 @@ export default function RoutesPage() {
       />
       {editingRoute && (
         <EditRouteDialog
+          key={editingRoute._id}
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           routeData={editingRoute}
@@ -162,6 +198,33 @@ export default function RoutesPage() {
             setEditingRoute(null);
           }}
         />
+      )}
+      {deletingRoute && (
+        <AlertDialog
+          open={Boolean(deletingRoute)}
+          onOpenChange={(open) => {
+            if (!open) setDeletingRoute(null);
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone. This will permanently delete the route.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (deletingRoute) {
+                    mutation.mutate(deletingRoute._id);
+                  }
+                }}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );

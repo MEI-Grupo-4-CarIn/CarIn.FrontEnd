@@ -1,5 +1,7 @@
+import { format } from "date-fns";
+
 export interface Vehicle {
-  _id: string;
+  _id?: string;
   model: string;
   brand: string;
   licensePlate: string;
@@ -12,10 +14,10 @@ export interface Vehicle {
   capacity: number;
   fuelType: "diesel" | "petrol" | "electric";
   averageFuelConsumption: number;
-  status: "none" | "inUser" | "repairing";
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
+  status: "none" | "inUse" | "repairing";
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export function formatVehicleStatus(status: string): string {
@@ -42,4 +44,9 @@ export function formatFuelType(fuelType: string): string {
     default:
       return fuelType;
   }
+}
+
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return format(date, "dd-MM-yyyy");
 }

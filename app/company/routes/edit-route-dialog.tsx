@@ -12,12 +12,11 @@ import { DateTimePicker } from "@/components/ui/dateTimePicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import debounce from "lodash/debounce";
 import { ApiError } from "@/types/error";
 import { useToast } from "@/components/ui/use-toast";
 import { Route } from "@/types/route";
-import { set } from "lodash";
 
 const formSchema = z.object({
   startCity: z.string().min(1, { message: "Start City is required" }),
@@ -127,7 +126,7 @@ const EditRouteDialog: React.FC<EditRouteDialogProps> = ({ open, onOpenChange, r
   }, [open, reset]);
 
   useEffect(() => {
-    if (!isUserLoading && !isVehicleLoading && !isUsersLoading && !isVehiclesLoading) {
+    if (open && routeData && !isUserLoading && !isVehicleLoading && !isUsersLoading && !isVehiclesLoading) {
       setValue("startCity", routeData.startPoint.city);
       setValue("startCountry", routeData.startPoint.country);
       setValue("endCity", routeData.endPoint.city);
@@ -140,7 +139,7 @@ const EditRouteDialog: React.FC<EditRouteDialogProps> = ({ open, onOpenChange, r
 
       setIsInitialized(true);
     }
-  }, [routeData, setValue, isUserLoading, isVehicleLoading, isUsersLoading, isVehiclesLoading]);
+  }, [routeData, open, setValue, isUserLoading, isVehicleLoading, isUsersLoading, isVehiclesLoading]);
 
   const mutation = useMutation((updatedRoute) => api.patch(`/routes/${routeData._id}`, updatedRoute), {
     onSuccess: () => {
