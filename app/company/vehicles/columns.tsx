@@ -16,7 +16,10 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const columns: (handleEditClick: (vehicle: Vehicle) => void) => ColumnDef<Vehicle>[] = (handleEditClick) => [
+export const columns: (handleEditClick: (vehicle: Vehicle) => void, handleDeleteClick: (route: Vehicle) => void) => ColumnDef<Vehicle>[] = (
+  handleEditClick,
+  handleDeleteClick
+) => [
   {
     accessorKey: "imageUrl",
     header: "Image",
@@ -64,6 +67,12 @@ export const columns: (handleEditClick: (vehicle: Vehicle) => void) => ColumnDef
         }
       };
 
+      const handleDelete = () => {
+        if (row.original) {
+          handleDeleteClick(row.original);
+        }
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -76,7 +85,7 @@ export const columns: (handleEditClick: (vehicle: Vehicle) => void) => ColumnDef
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem onClick={handleDetailsClick}>Details</DropdownMenuItem>
             <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

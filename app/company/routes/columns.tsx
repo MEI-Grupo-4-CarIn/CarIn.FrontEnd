@@ -13,7 +13,10 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const columns: (handleEditClick: (route: Route) => void) => ColumnDef<Route>[] = (handleEditClick) => [
+export const columns: (handleEditClick: (route: Route) => void, handleDeleteClick: (route: Route) => void) => ColumnDef<Route>[] = (
+  handleEditClick,
+  handleDeleteClick
+) => [
   {
     accessorKey: "startPoint",
     header: "Starting Point",
@@ -58,6 +61,7 @@ export const columns: (handleEditClick: (route: Route) => void) => ColumnDef<Rou
     header: "Actions",
     cell: ({ row }) => {
       const router = useRouter();
+
       const handleDetailsClick = () => {
         router.push(`/company/routes/${row.original._id}`);
       };
@@ -65,6 +69,12 @@ export const columns: (handleEditClick: (route: Route) => void) => ColumnDef<Rou
       const handleEdit = () => {
         if (row.original) {
           handleEditClick(row.original);
+        }
+      };
+
+      const handleDelete = () => {
+        if (row.original) {
+          handleDeleteClick(row.original);
         }
       };
 
@@ -80,7 +90,7 @@ export const columns: (handleEditClick: (route: Route) => void) => ColumnDef<Rou
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem onClick={handleDetailsClick}>Details</DropdownMenuItem>
             <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

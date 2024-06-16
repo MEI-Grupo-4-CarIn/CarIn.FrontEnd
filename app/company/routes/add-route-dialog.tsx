@@ -12,7 +12,7 @@ import { DateTimePicker } from "@/components/ui/dateTimePicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { ApiError } from "@/types/error";
 import { useToast } from "@/components/ui/use-toast";
@@ -41,9 +41,6 @@ const AddRouteDialog: React.FC<AddRouteDialogProps> = ({ open, onOpenChange, onR
   const [debouncedUserSearch, setDebouncedUserSearch] = useState<string>(userSearch);
   const [vehicleSearch, setVehicleSearch] = useState<string>("");
   const [debouncedVehicleSearch, setDebouncedVehicleSearch] = useState<string>(vehicleSearch);
-
-  const userSearchRef = useRef<HTMLInputElement>(null);
-  const vehicleSearchRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -213,7 +210,6 @@ const AddRouteDialog: React.FC<AddRouteDialogProps> = ({ open, onOpenChange, onR
                             placeholder="Search User"
                             value={userSearch}
                             onChange={handleUserSearchChange}
-                            ref={userSearchRef}
                             onKeyDown={(e) => e.stopPropagation()}
                           />
                           {!usersData?.data || usersData.data.length === 0 ? (
@@ -250,7 +246,6 @@ const AddRouteDialog: React.FC<AddRouteDialogProps> = ({ open, onOpenChange, onR
                             placeholder="Search Vehicle"
                             value={vehicleSearch}
                             onChange={handleVehicleSearchChange}
-                            ref={vehicleSearchRef}
                             onKeyDown={(e) => e.stopPropagation()}
                           />
                         </div>

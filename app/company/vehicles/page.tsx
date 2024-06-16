@@ -16,6 +16,18 @@ import { ApiError } from "@/types/error";
 import Loading from "@/app/company/vehicles/loading";
 import AddVehicleDialog from "@/app/company/vehicles/add-vehicle-dialog";
 import EditVehicleDialog from "@/app/company/vehicles/edit-vehicle-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { useMutation } from "react-query";
+import api from "@/lib/axios";
 
 export default function VehiclesPage() {
   const { toast } = useToast();
@@ -27,6 +39,7 @@ export default function VehiclesPage() {
   const [isNewVehicleDialogOpen, setIsNewVehicleDialogOpen] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [editingVehicle, setEditingVehicle] = useState<any | null>(null);
+  const [deletingVehicle, setDeletingVehicle] = useState<any | null>(null);
 
   const { data, error, refetch } = useVehicles(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
 
@@ -63,10 +76,55 @@ export default function VehiclesPage() {
     setIsEditDialogOpen(true);
   };
 
+  const handleDeleteClick = (vehicle: any) => {
+    setDeletingVehicle(vehicle);
+  };
+
+  const checkVehicleRoutes = useMutation((vehicleId: string) => api.get(`/routes?vehicleId=${vehicleId}&page=1&perPage=1`), {
+    onSuccess: (data) => {
+      if (data.data.data.length > 0) {
+        toast({
+          title: "Error",
+          description: "Vehicle cannot be deleted as it is associated with a route.",
+          variant: "destructive",
+        });
+        setDeletingVehicle(null);
+      } else {
+        mutation.mutate(deletingVehicle._id);
+      }
+    },
+    onError: (error: ApiError) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      setDeletingVehicle(null);
+    },
+  });
+
+  const mutation = useMutation((vehicleId: string) => api.delete(`/vehicles/${vehicleId}`), {
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Vehicle deleted successfully.",
+      });
+      refetch();
+      setDeletingVehicle(null);
+    },
+    onError: (error: ApiError) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const renderContent = () => {
     return (
       <DataTable
-        columns={columns(handleEditClick)}
+        columns={columns(handleEditClick, handleDeleteClick)}
         data={data?.data || []}
         totalItems={data?.meta?.totalItems || 0}
         pageCount={data?.meta?.totalPages || 1}
@@ -154,6 +212,45 @@ export default function VehiclesPage() {
             setEditingVehicle(null);
           }}
         />
+      )}
+      {editingVehicle && (
+        <EditVehicleDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          vehicleData={editingVehicle}
+          onVehicleUpdated={() => {
+            refetch();
+            setIsEditDialogOpen(false);
+            setEditingVehicle(null);
+          }}
+        />
+      )}
+      {deletingVehicle && (
+        <AlertDialog
+          open={Boolean(deletingVehicle)}
+          onOpenChange={(open) => {
+            if (!open) setDeletingVehicle(null);
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone. This will permanently delete the vehicle.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (deletingVehicle) {
+                    checkVehicleRoutes.mutate(deletingVehicle._id);
+                  }
+                }}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );
