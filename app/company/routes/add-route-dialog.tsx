@@ -258,7 +258,7 @@ const AddRouteDialog: React.FC<AddRouteDialogProps> = ({ open, onOpenChange, onR
                           <div className="p-2">No vehicles found</div>
                         ) : (
                           vehiclesData?.data.map((vehicle) => (
-                            <SelectItem key={vehicle._id} value={vehicle._id}>
+                            <SelectItem key={vehicle._id} value={vehicle._id ? vehicle._id : ""}>
                               {vehicle.brand} {vehicle.model}
                             </SelectItem>
                           ))
