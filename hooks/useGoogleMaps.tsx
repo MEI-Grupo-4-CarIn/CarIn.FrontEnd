@@ -6,21 +6,21 @@ export function useGoogleMaps() {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !window.google) {
-      const existingScript = document.getElementById("googleMapsScript");
-      if (!existingScript) {
-        const script = document.createElement("script");
-        script.id = "googleMapsScript";
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = () => setMapLoaded(true);
-        document.head.appendChild(script);
-      } else {
+    const existingScript = document.getElementById("googleMapsScript");
+
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.id = "googleMapsScript";
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setMapLoaded(true);
+      document.head.appendChild(script);
+    } else {
+      existingScript.onload = () => setMapLoaded(true);
+      if (window.google) {
         setMapLoaded(true);
       }
-    } else {
-      setMapLoaded(true);
     }
   }, []);
 
