@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const loginMutation = useMutation(async (credentials: { email: string; password: string }) => {
     await axios
-      .post("http://2.80.118.111:9000/auth/login", credentials)
+      .post(`${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/auth/login`, credentials)
       .then((response) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("refreshToken", response.data.refreshToken);
@@ -82,43 +82,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
   });
 
-  const refreshMutation = useMutation(async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    const response = await axios.post("http://2.80.118.111:9000/auth/refreshToken", { refreshToken });
-    localStorage.setItem("token", response.data.token);
-    const decodedToken: any = jwtDecode(response.data.token);
-    const user: User = {
-      id: decodedToken.id,
-      email: decodedToken.email,
-      firstName: decodedToken.firstName,
-      lastName: decodedToken.lastName,
-      role: decodedToken.role,
-    };
-    setUser(user);
-  });
-
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     setUser(null);
     queryClient.clear();
   };
-
-  // Refresh token periodically
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken: any = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
-        if (decodedToken.exp - currentTime < 60) {
-          refreshMutation.mutate();
-        }
-      }
-    }, 300000); // Check every 5 minutes
-
-    return () => clearInterval(interval);
-  }, [refreshMutation]);
 
   return <AuthContext.Provider value={{ user, login: loginMutation.mutateAsync, logout, isLoading }}>{children}</AuthContext.Provider>;
 };
