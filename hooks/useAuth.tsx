@@ -14,6 +14,7 @@ interface User {
 interface AuthContextProps {
   user: User | null;
   login: (credentials: { email: string; password: string }) => Promise<void>;
+  register: (data: { firstName: string; lastName: string; birthDate: string; email: string; password: string }) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -82,6 +83,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
   });
 
+  const registerMutation = useMutation(async (data: { firstName: string; lastName: string; birthDate: string; email: string; password: string }) => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/auth/register`, data).catch((error) => {
+      throw new Error(error.response.data.message);
+    });
+  });
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
@@ -89,7 +96,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     queryClient.clear();
   };
 
-  return <AuthContext.Provider value={{ user, login: loginMutation.mutateAsync, logout, isLoading }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, login: loginMutation.mutateAsync, register: registerMutation.mutateAsync, logout, isLoading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {

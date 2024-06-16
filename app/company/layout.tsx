@@ -32,7 +32,7 @@ export default function CompanyLayout({ children }: CompanyLayoutProps) {
     router.push("/auth/login");
   };
 
-  const getLinkClass = (path: string) => (pathname === path ? "text-foreground" : "text-muted-foreground");
+  const getLinkClass = (path: string) => (pathname.startsWith(path) ? "text-foreground" : "text-muted-foreground");
 
   return (
     <ProtectedRoute>
