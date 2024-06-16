@@ -53,11 +53,11 @@ export default function VehicleDetailsPage() {
           <Card>
             <CardContent className="p-6">
               <div className="grid gap-4">
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col md:flex-row items-center">
                   <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-4">
                     <Image
                       alt="Vehicle image"
-                      className="h-32 w-32 md:h-full md:w-auto rounded-md object-fit"
+                      className="h-32 w-32 md:h-60 md:w-auto rounded-md object-fit"
                       src={"/placeholder_vehicle.svg"}
                       width={100}
                       height={100}
@@ -106,16 +106,6 @@ export default function VehicleDetailsPage() {
                     </div>
                     <div className="flex flex-row space-x-1 mt-4">
                       <div className="basis-1/2">
-                        <div className="font-semibold">Kms</div>
-                        <div className="text-foreground">{data.kms}</div>
-                      </div>
-                      <div className="basis-1/2">
-                        <div className="font-semibold">Capacity</div>
-                        <div className="text-foreground">{data.capacity}</div>
-                      </div>
-                    </div>
-                    <div className="flex flex-row space-x-1 mt-4">
-                      <div className="basis-1/2">
                         <div className="font-semibold">Fuel</div>
                         <Badge variant="outline">{formatFuelType(data.fuelType)}</Badge>
                       </div>
@@ -125,9 +115,17 @@ export default function VehicleDetailsPage() {
                       </div>
                     </div>
                     <div className="flex flex-row space-x-1 mt-4">
-                      <div className="basis-1/2">
+                      <div className="basis-1/3">
                         <div className="font-semibold">Status</div>
                         <Badge variant="outline">{statusText}</Badge>
+                      </div>
+                      <div className="basis-1/3">
+                        <div className="font-semibold">Kms</div>
+                        <div className="text-foreground">{data.kms}</div>
+                      </div>
+                      <div className="basis-1/3">
+                        <div className="font-semibold">Capacity</div>
+                        <div className="text-foreground">{data.capacity}</div>
                       </div>
                     </div>
                   </div>
