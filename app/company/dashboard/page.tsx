@@ -46,7 +46,7 @@ export default function DashboardPage() {
                 </div>
               </div>
             </CardTitle>
-            <CardDescription className="max-w-lg text-balance leading-relaxed">Be always updated on your fleet's routes.</CardDescription>
+            <CardDescription className="max-w-lg text-balance leading-relaxed">Be always updated on your fleet&apos;s routes.</CardDescription>
           </CardHeader>
           <CardFooter>
             <Button onClick={() => router.push("/company/routes")}>View All Routes</Button>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
                 </div>
               </div>
             </CardTitle>
-            <CardDescription className="max-w-lg text-balance leading-relaxed">Manage your fleet's vehicles efficiently.</CardDescription>
+            <CardDescription className="max-w-lg text-balance leading-relaxed">Manage your fleet&apos;s vehicles efficiently.</CardDescription>
           </CardHeader>
           <CardFooter>
             <Button onClick={() => router.push("/company/vehicles")}>View All Vehicles</Button>
