@@ -19,9 +19,10 @@ interface ActionsProps {
   row: any;
   onDetailsClick: (id: string) => void;
   onEditClick: (route: Route) => void;
+  onDeleteClick: (route: Route) => void;
 }
 
-const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick, onEditClick }) => {
+const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick, onEditClick, onDeleteClick }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,16 +35,17 @@ const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick, onEditClick 
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => onDetailsClick(row.original._id)}>Details</DropdownMenuItem>
         <DropdownMenuItem onClick={() => onEditClick(row.original)}>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onDeleteClick(row.original)}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export const columns: (onDetailsClick: (id: string) => void, onEditClick: (route: Route) => void) => ColumnDef<Route>[] = (
-  onDetailsClick,
-  onEditClick
-) => [
+export const columns: (
+  onDetailsClick: (id: string) => void,
+  onEditClick: (route: Route) => void,
+  onDeleteClick: (route: Route) => void
+) => ColumnDef<Route>[] = (onDetailsClick, onEditClick, onDeleteClick) => [
   {
     accessorKey: "startPoint",
     header: "Starting Point",
@@ -86,7 +88,7 @@ export const columns: (onDetailsClick: (id: string) => void, onEditClick: (route
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => <ActionsCell row={row} onDetailsClick={onDetailsClick} onEditClick={onEditClick} />,
+    cell: ({ row }) => <ActionsCell row={row} onDetailsClick={onDetailsClick} onEditClick={onEditClick} onDeleteClick={onDeleteClick} />,
     meta: { className: "table-cell max-w-12" },
   },
 ];

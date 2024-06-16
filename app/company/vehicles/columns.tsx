@@ -19,9 +19,11 @@ declare module "@tanstack/react-table" {
 interface ActionsProps {
   row: any;
   onDetailsClick: (id: string) => void;
+  onEditClick: (vehicle: Vehicle) => void;
+  onDeleteClick: (vehicle: Vehicle) => void;
 }
 
-const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick }) => {
+const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick, onEditClick, onDeleteClick }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,14 +35,18 @@ const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => onDetailsClick(row.original._id)}>Details</DropdownMenuItem>
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onEditClick(row.original)}>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onDeleteClick(row.original)}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export const columns: (onDetailsClick: (id: string) => void) => ColumnDef<Vehicle>[] = (onDetailsClick) => [
+export const columns: (
+  onDetailsClick: (id: string) => void,
+  onEditClick: (vehicle: Vehicle) => void,
+  onDeleteClick: (vehicle: Vehicle) => void
+) => ColumnDef<Vehicle>[] = (onDetailsClick, onEditClick, onDeleteClick) => [
   {
     accessorKey: "imageUrl",
     header: "Image",
@@ -76,7 +82,7 @@ export const columns: (onDetailsClick: (id: string) => void) => ColumnDef<Vehicl
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => <ActionsCell row={row} onDetailsClick={onDetailsClick} />,
+    cell: ({ row }) => <ActionsCell row={row} onDetailsClick={onDetailsClick} onEditClick={onEditClick} onDeleteClick={onDeleteClick} />,
     meta: { className: "table-cell max-w-12" },
   },
 ];
