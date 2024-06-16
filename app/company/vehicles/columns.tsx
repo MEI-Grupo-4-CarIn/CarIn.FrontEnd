@@ -16,10 +16,37 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const columns: (handleEditClick: (vehicle: Vehicle) => void, handleDeleteClick: (route: Vehicle) => void) => ColumnDef<Vehicle>[] = (
-  handleEditClick,
-  handleDeleteClick
-) => [
+interface ActionsProps {
+  row: any;
+  onDetailsClick: (id: string) => void;
+  onEditClick: (vehicle: Vehicle) => void;
+  onDeleteClick: (vehicle: Vehicle) => void;
+}
+
+const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick, onEditClick, onDeleteClick }) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-haspopup="true" size="icon" variant="ghost">
+          <MoreHorizontal className="h-4 w-4" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem onClick={() => onDetailsClick(row.original._id)}>Details</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onEditClick(row.original)}>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onDeleteClick(row.original)}>Delete</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export const columns: (
+  onDetailsClick: (id: string) => void,
+  onEditClick: (vehicle: Vehicle) => void,
+  onDeleteClick: (vehicle: Vehicle) => void
+) => ColumnDef<Vehicle>[] = (onDetailsClick, onEditClick, onDeleteClick) => [
   {
     accessorKey: "imageUrl",
     header: "Image",
@@ -55,41 +82,7 @@ export const columns: (handleEditClick: (vehicle: Vehicle) => void, handleDelete
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      const router = useRouter();
-      const handleDetailsClick = () => {
-        router.push(`/company/vehicles/${row.original._id}`);
-      };
-
-      const handleEdit = () => {
-        if (row.original) {
-          handleEditClick(row.original);
-        }
-      };
-
-      const handleDelete = () => {
-        if (row.original) {
-          handleDeleteClick(row.original);
-        }
-      };
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button aria-haspopup="true" size="icon" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={handleDetailsClick}>Details</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <ActionsCell row={row} onDetailsClick={onDetailsClick} onEditClick={onEditClick} onDeleteClick={onDeleteClick} />,
     meta: { className: "table-cell max-w-12" },
   },
 ];

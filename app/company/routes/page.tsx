@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -104,7 +104,7 @@ export default function RoutesPage() {
   const renderContent = () => {
     return (
       <DataTable
-        columns={columns(handleEditClick, handleDeleteClick)}
+        columns={columns(handleDetailsClick, handleEditClick, handleDeleteClick)}
         data={data?.data || []}
         totalItems={data?.meta?.totalItems || 0}
         pageCount={data?.meta?.totalPages || 1}
@@ -188,6 +188,7 @@ export default function RoutesPage() {
       />
       {editingRoute && (
         <EditRouteDialog
+          key={editingRoute._id}
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           routeData={editingRoute}

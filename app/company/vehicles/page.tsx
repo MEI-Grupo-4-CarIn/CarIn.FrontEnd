@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 import { useVehicles } from "@/hooks/useVehicles";
@@ -45,10 +45,6 @@ export default function VehiclesPage() {
 
   const { data, error, refetch } = useVehicles(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
 
-  const handleDetailsClick = (id: string) => {
-    router.push(`/company/vehicles/${id}`);
-  };
-
   const handleTabChange = (value: string) => {
     setSelectedTab(value);
     setPageIndex(0);
@@ -73,6 +69,10 @@ export default function VehiclesPage() {
       });
     }
   }, [error, toast]);
+
+  const handleDetailsClick = (id: string) => {
+    router.push(`/company/vehicles/${id}`);
+  };
 
   const handleEditClick = (vehicle: any) => {
     setEditingVehicle(vehicle);
@@ -127,7 +127,7 @@ export default function VehiclesPage() {
   const renderContent = () => {
     return (
       <DataTable
-        columns={columns(handleEditClick, handleDeleteClick)}
+        columns={columns(handleDetailsClick, handleEditClick, handleDeleteClick)}
         data={data?.data || []}
         totalItems={data?.meta?.totalItems || 0}
         pageCount={data?.meta?.totalPages || 1}
@@ -206,18 +206,7 @@ export default function VehiclesPage() {
       />
       {editingVehicle && (
         <EditVehicleDialog
-          open={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
-          vehicleData={editingVehicle}
-          onVehicleUpdated={() => {
-            refetch();
-            setIsEditDialogOpen(false);
-            setEditingVehicle(null);
-          }}
-        />
-      )}
-      {editingVehicle && (
-        <EditVehicleDialog
+          key={editingVehicle._id}
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           vehicleData={editingVehicle}

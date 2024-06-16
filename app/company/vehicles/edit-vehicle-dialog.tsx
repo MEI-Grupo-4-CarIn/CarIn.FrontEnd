@@ -96,22 +96,24 @@ const EditVehicleDialog: React.FC<EditVehicleDialogProps> = ({ open, onOpenChang
   }, [open, reset]);
 
   useEffect(() => {
-    setValue("brand", vehicleData.brand);
-    setValue("model", vehicleData.model);
-    setValue("licensePlate", vehicleData.licensePlate);
-    setValue("vin", vehicleData.vin);
-    setValue("color", vehicleData.color);
-    setValue("registerDate", new Date(vehicleData.registerDate));
-    setValue("acquisitionDate", new Date(vehicleData.acquisitionDate));
-    setValue("category", vehicleData.category);
-    setValue("kms", vehicleData.kms);
-    setValue("capacity", vehicleData.capacity);
-    setValue("fuelType", vehicleData.fuelType);
-    setValue("averageFuelConsumption", vehicleData.averageFuelConsumption);
-    setValue("status", vehicleData.status);
+    if (open && vehicleData) {
+      setValue("brand", vehicleData.brand);
+      setValue("model", vehicleData.model);
+      setValue("licensePlate", vehicleData.licensePlate);
+      setValue("vin", vehicleData.vin);
+      setValue("color", vehicleData.color);
+      setValue("registerDate", new Date(vehicleData.registerDate));
+      setValue("acquisitionDate", new Date(vehicleData.acquisitionDate));
+      setValue("category", vehicleData.category);
+      setValue("kms", vehicleData.kms);
+      setValue("capacity", vehicleData.capacity);
+      setValue("fuelType", vehicleData.fuelType);
+      setValue("averageFuelConsumption", vehicleData.averageFuelConsumption);
+      setValue("status", vehicleData.status);
 
-    setIsInitialized(true);
-  }, [vehicleData, setValue]);
+      setIsInitialized(true);
+    }
+  }, [vehicleData, open, setValue]);
 
   const mutation = useMutation((updatedVehicle) => api.patch(`/vehicles/${vehicleData._id}`, updatedVehicle), {
     onSuccess: () => {
