@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, Suspense } from "react";
+import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 import { useVehicles } from "@/hooks/useVehicles";
 import { DataTable } from "@/app/company/vehicles/data-table";
@@ -17,6 +18,7 @@ import Loading from "@/app/company/vehicles/loading";
 
 export default function VehiclesPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<string>("all");
   const [query, setQuery] = useState<string>("");
   const [debouncedQuery, setDebouncedQuery] = useState<string>(query);
@@ -25,18 +27,19 @@ export default function VehiclesPage() {
 
   const { data, error } = useVehicles(debouncedQuery, selectedTab, pageSize, pageIndex + 1);
 
+  const handleDetailsClick = (id: string) => {
+    router.push(`/company/vehicles/${id}`);
+  };
+
   const handleTabChange = (value: string) => {
     setSelectedTab(value);
     setPageIndex(0);
   };
 
-  const debouncedSearch = useCallback(
-    debounce((searchTerm: string) => {
-      setDebouncedQuery(searchTerm);
-      setPageIndex(0);
-    }, 500),
-    []
-  );
+  const debouncedSearch = debounce((searchTerm: string) => {
+    setDebouncedQuery(searchTerm);
+    setPageIndex(0);
+  }, 500);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -56,7 +59,7 @@ export default function VehiclesPage() {
   const renderContent = () => {
     return (
       <DataTable
-        columns={columns}
+        columns={columns(handleDetailsClick)}
         data={data?.data || []}
         totalItems={data?.meta?.totalItems || 0}
         pageCount={data?.meta?.totalPages || 1}

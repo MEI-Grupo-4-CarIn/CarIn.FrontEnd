@@ -17,6 +17,7 @@ import debounce from "lodash/debounce";
 import { ApiError } from "@/types/error";
 import { useToast } from "@/components/ui/use-toast";
 import { Route } from "@/types/route";
+import { set } from "lodash";
 
 const formSchema = z.object({
   startCity: z.string().min(1, { message: "Start City is required" }),
@@ -178,24 +179,18 @@ const EditRouteDialog: React.FC<EditRouteDialogProps> = ({ open, onOpenChange, r
     }
   };
 
-  const debouncedSearchUsers = useCallback(
-    debounce((searchTerm: string) => {
-      setDebouncedUserSearch(searchTerm);
-    }, 500),
-    []
-  );
+  const debouncedSearchUsers = debounce((searchTerm: string) => {
+    setDebouncedUserSearch(searchTerm);
+  }, 500);
 
   const handleUserSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserSearch(event.target.value);
     debouncedSearchUsers(event.target.value);
   };
 
-  const debouncedSearchVehicles = useCallback(
-    debounce((searchTerm: string) => {
-      setDebouncedVehicleSearch(searchTerm);
-    }, 500),
-    []
-  );
+  const debouncedSearchVehicles = debounce((searchTerm: string) => {
+    setDebouncedVehicleSearch(searchTerm);
+  }, 500);
 
   const handleVehicleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVehicleSearch(event.target.value);

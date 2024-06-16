@@ -20,7 +20,12 @@ jobs:
       - name: Build the Docker image
         run: |
           TAG=${GITHUB_REF#refs/tags/}
-          docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/carin-frontend:${TAG} --tag ${{ secrets.DOCKER_HUB_USERNAME }}/carin-frontend:latest
+          docker build . \
+            --file Dockerfile \
+            --tag ${{ secrets.DOCKER_HUB_USERNAME }}/carin-frontend:${TAG} \
+            --tag ${{ secrets.DOCKER_HUB_USERNAME }}/carin-frontend:latest \
+            --build-arg NEXT_PUBLIC_API_GATEWAY_BASE_URL=${{ secrets.NEXT_PUBLIC_API_GATEWAY_BASE_URL }} \
+            --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
 
       - name: Push the Docker image
         run: |
