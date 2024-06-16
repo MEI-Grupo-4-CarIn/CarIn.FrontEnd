@@ -30,13 +30,10 @@ export default function UsersPage() {
     setPageIndex(0);
   };
 
-  const debouncedSearch = useCallback(
-    debounce((searchTerm: string) => {
-      setDebouncedQuery(searchTerm);
-      setPageIndex(0);
-    }, 500),
-    []
-  );
+  const debouncedSearch = debounce((searchTerm: string) => {
+    setDebouncedQuery(searchTerm);
+    setPageIndex(0);
+  }, 500);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
