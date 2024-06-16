@@ -92,24 +92,18 @@ const AddRouteDialog: React.FC<AddRouteDialogProps> = ({ open, onOpenChange, onR
     mutation.mutate(payload);
   };
 
-  const debouncedSearchUsers = useCallback(
-    debounce((searchTerm: string) => {
-      setDebouncedUserSearch(searchTerm);
-    }, 500),
-    []
-  );
+  const debouncedSearchUsers = debounce((searchTerm: string) => {
+    setDebouncedUserSearch(searchTerm);
+  }, 500);
 
   const handleUserSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserSearch(event.target.value);
     debouncedSearchUsers(event.target.value);
   };
 
-  const debouncedSearchVehicles = useCallback(
-    debounce((searchTerm: string) => {
-      setDebouncedVehicleSearch(searchTerm);
-    }, 500),
-    []
-  );
+  const debouncedSearchVehicles = debounce((searchTerm: string) => {
+    setDebouncedVehicleSearch(searchTerm);
+  }, 500);
 
   const handleVehicleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVehicleSearch(event.target.value);

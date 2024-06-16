@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, Suspense } from "react";
+import { useRouter } from "next/navigation";
 import debounce from "lodash/debounce";
 import { useRoutes } from "@/hooks/useRoutes";
 import { DataTable } from "@/app/company/routes/data-table";
@@ -31,6 +32,7 @@ import api from "@/lib/axios";
 
 export default function RoutesPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<string>("all");
   const [query, setQuery] = useState<string>("");
   const [debouncedQuery, setDebouncedQuery] = useState<string>(query);
@@ -48,13 +50,10 @@ export default function RoutesPage() {
     setPageIndex(0);
   };
 
-  const debouncedSearch = useCallback(
-    debounce((searchTerm: string) => {
-      setDebouncedQuery(searchTerm);
-      setPageIndex(0);
-    }, 500),
-    []
-  );
+  const debouncedSearch = debounce((searchTerm: string) => {
+    setDebouncedQuery(searchTerm);
+    setPageIndex(0);
+  }, 500);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -70,6 +69,10 @@ export default function RoutesPage() {
       });
     }
   }, [error, toast]);
+
+  const handleDetailsClick = (id: string) => {
+    router.push(`/company/routes/${id}`);
+  };
 
   const handleEditClick = (route: any) => {
     setEditingRoute(route);
