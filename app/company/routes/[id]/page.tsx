@@ -192,30 +192,30 @@ export default function RouteDetailsPage() {
                   <div className="basis-1/3">
                     <div className="font-semibold">Model</div>
                     <div className="text-foreground">
-                      {vehicleData?.brand} {vehicleData?.model}
+                      {vehicleData.brand} {vehicleData.model}
                     </div>
                   </div>
                   <div className="basis-1/3">
                     <div className="font-semibold">License Plate</div>
-                    <div className="text-foreground">{vehicleData?.licensePlate}</div>
+                    <div className="text-foreground">{vehicleData.licensePlate}</div>
                   </div>
                   <div className="basis-1/3">
                     <div className="font-semibold">VIN</div>
-                    <div className="text-foreground">{vehicleData?.vin}</div>
+                    <div className="text-foreground">{vehicleData.vin}</div>
                   </div>
                 </div>
                 <div className="flex flex-row space-x-1">
                   <div className="basis-1/3">
                     <div className="font-semibold">Kms</div>
-                    <div className="text-foreground">{vehicleData?.kms}</div>
+                    <div className="text-foreground">{vehicleData.kms}</div>
                   </div>
                   <div className="basis-1/3">
                     <div className="font-semibold">Fuel</div>
-                    <div className="text-foreground">{formatFuelType(vehicleData?.fuelType)}</div>
+                    <div className="text-foreground">{formatFuelType(vehicleData.fuelType)}</div>
                   </div>
                   <div className="basis-1/3">
                     <div className="font-semibold">Consumption</div>
-                    <div className="text-foreground">{vehicleData?.averageFuelConsumption.toFixed(2)} l/100km</div>
+                    <div className="text-foreground">{vehicleData.averageFuelConsumption.toFixed(2)} l/100km</div>
                   </div>
                 </div>
               </div>
@@ -228,7 +228,7 @@ export default function RouteDetailsPage() {
               <div className="text-lg font-bold">Route Map</div>
             </CardHeader>
             <CardContent className="h-96 lg:h-[calc(100%-4.5rem)]">
-              {mapLoaded ? (
+              {mapLoaded && window.google ? (
                 <div className="h-full w-full">
                   <GoogleMap
                     mapContainerStyle={{ height: "100%", width: "100%" }}
