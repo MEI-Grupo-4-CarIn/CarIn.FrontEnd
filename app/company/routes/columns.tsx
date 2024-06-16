@@ -1,9 +1,8 @@
-"use client";
-
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Route, formatStatus, formatDate } from "@/types/route";
 
@@ -14,7 +13,7 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const columns: ColumnDef<Route>[] = [
+export const columns: (handleEditClick: (route: Route) => void) => ColumnDef<Route>[] = (handleEditClick) => [
   {
     accessorKey: "startPoint",
     header: "Starting Point",
@@ -36,7 +35,13 @@ export const columns: ColumnDef<Route>[] = [
   {
     accessorKey: "distance",
     header: "Distance",
-    cell: ({ row }) => `${row.original.distance.toFixed(0)} km`,
+    cell: ({ row }) => `${row.original.distance?.toFixed(0)} km`,
+    meta: { className: "font-medium max-w-28 md:max-w-40 truncate hover:text-clip hidden md:table-cell" },
+  },
+  {
+    accessorKey: "duration",
+    header: "Estimated Duration",
+    cell: ({ row }) => `${row.original.duration} hours`,
     meta: { className: "font-medium max-w-28 md:max-w-40 truncate hover:text-clip hidden md:table-cell" },
   },
   {
@@ -51,21 +56,35 @@ export const columns: ColumnDef<Route>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button aria-haspopup="true" size="icon" variant="ghost">
-            <MoreHorizontal className="h-4 w-4" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+      const router = useRouter();
+      const handleDetailsClick = () => {
+        router.push(`/company/routes/${row.original._id}`);
+      };
+
+      const handleEdit = () => {
+        if (row.original) {
+          handleEditClick(row.original);
+        }
+      };
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button aria-haspopup="true" size="icon" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={handleDetailsClick}>Details</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
     meta: { className: "table-cell max-w-12" },
   },
 ];
