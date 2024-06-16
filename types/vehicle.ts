@@ -12,7 +12,7 @@ export interface Vehicle {
   capacity: number;
   fuelType: "diesel" | "petrol" | "electric";
   averageFuelConsumption: number;
-  status: "none" | "inUser" | "repairing";
+  status: "none" | "inUse" | "repairing";
   isDeleted?: boolean;
   createdAt?: string;
   updatedAt?: string;

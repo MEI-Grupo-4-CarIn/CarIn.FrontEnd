@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowBigLeft, Pencil } from "lucide-react";
 import { useVehicleById } from "@/hooks/useVehicles";
 import { useState } from "react";
+import EditVehicleDialog from "@/app/company/vehicles/edit-vehicle-dialog";
 
 export default function VehicleDetailsPage() {
   const pathname = usePathname();
@@ -97,15 +98,15 @@ export default function VehicleDetailsPage() {
           </Card>
         </div>
       </div>
-      {/* <EditRouteDialog
+      <EditVehicleDialog
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
-        routeData={routeData}
-        onRouteUpdated={() => {
+        vehicleData={data}
+        onVehicleUpdated={() => {
           refetch();
           setIsEditDialogOpen(false);
         }}
-      /> */}
+      />
     </div>
   );
 }

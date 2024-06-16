@@ -15,6 +15,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ApiError } from "@/types/error";
 import Loading from "@/app/company/vehicles/loading";
 import AddVehicleDialog from "@/app/company/vehicles/add-vehicle-dialog";
+import EditVehicleDialog from "@/app/company/vehicles/edit-vehicle-dialog";
 
 export default function VehiclesPage() {
   const { toast } = useToast();
@@ -142,6 +143,18 @@ export default function VehiclesPage() {
           setIsNewVehicleDialogOpen(false);
         }}
       />
+      {editingVehicle && (
+        <EditVehicleDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          vehicleData={editingVehicle}
+          onVehicleUpdated={() => {
+            refetch();
+            setIsEditDialogOpen(false);
+            setEditingVehicle(null);
+          }}
+        />
+      )}
     </div>
   );
 }
