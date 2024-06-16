@@ -8,7 +8,8 @@ interface TimePickerProps {
 }
 
 export function TimePicker({ value, onChange, date }: TimePickerProps) {
-  const now = new Date();
+  const now = React.useMemo(() => new Date(), []);
+
   const isTodayDate = date && now.toDateString() === date.toDateString();
 
   const hours = Array.from({ length: 24 }, (_, i) => i);

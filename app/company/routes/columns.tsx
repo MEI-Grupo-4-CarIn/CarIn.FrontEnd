@@ -1,3 +1,5 @@
+"use client";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,7 +15,35 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const columns: (handleEditClick: (route: Route) => void) => ColumnDef<Route>[] = (handleEditClick) => [
+interface ActionsProps {
+  row: any;
+  onDetailsClick: (id: string) => void;
+  onEditClick: (route: Route) => void;
+}
+
+const ActionsCell: React.FC<ActionsProps> = ({ row, onDetailsClick, onEditClick }) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-haspopup="true" size="icon" variant="ghost">
+          <MoreHorizontal className="h-4 w-4" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem onClick={() => onDetailsClick(row.original._id)}>Details</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onEditClick(row.original)}>Edit</DropdownMenuItem>
+        <DropdownMenuItem>Delete</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export const columns: (onDetailsClick: (id: string) => void, onEditClick: (route: Route) => void) => ColumnDef<Route>[] = (
+  onDetailsClick,
+  onEditClick
+) => [
   {
     accessorKey: "startPoint",
     header: "Starting Point",
@@ -56,35 +86,7 @@ export const columns: (handleEditClick: (route: Route) => void) => ColumnDef<Rou
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      const router = useRouter();
-      const handleDetailsClick = () => {
-        router.push(`/company/routes/${row.original._id}`);
-      };
-
-      const handleEdit = () => {
-        if (row.original) {
-          handleEditClick(row.original);
-        }
-      };
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button aria-haspopup="true" size="icon" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={handleDetailsClick}>Details</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <ActionsCell row={row} onDetailsClick={onDetailsClick} onEditClick={onEditClick} />,
     meta: { className: "table-cell max-w-12" },
   },
 ];
