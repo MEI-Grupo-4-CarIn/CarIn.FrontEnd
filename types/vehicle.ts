@@ -1,5 +1,5 @@
 export interface Vehicle {
-  _id: string;
+  _id?: string;
   model: string;
   brand: string;
   licensePlate: string;
@@ -13,9 +13,9 @@ export interface Vehicle {
   fuelType: "diesel" | "petrol" | "electric";
   averageFuelConsumption: number;
   status: "none" | "inUser" | "repairing";
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export function formatVehicleStatus(status: string): string {
