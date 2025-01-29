@@ -15,7 +15,7 @@ To install and set up the project locally, follow these steps:
 
    ```bash
    git clone https://github.com/MEI-Grupo-4-CarIn/CarIn.FrontEnd.git
-   cd CarIn.FrontEnd
+   cd CarIn.FrontEndfsfsfsd
    ```
 
 2. **Install dependencies:**
